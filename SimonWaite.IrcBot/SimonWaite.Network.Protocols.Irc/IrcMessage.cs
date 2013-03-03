@@ -16,6 +16,8 @@ namespace SimonWaite.Network.Protocols.Irc
 	{
 		static readonly char[] splitOnColon = new char[]{ ':' };
 		static readonly char[] splitOnSpace = new char[]{ ' ' };
+		static readonly char[] splitOnBang = new char[]{ '!' };
+		static readonly char[] splitOnAt = new char[]{ '@' };
 
 		public IrcMessage ()
 		{
@@ -64,6 +66,10 @@ namespace SimonWaite.Network.Protocols.Irc
 				Data = components [1];
 			}
 		}
+		// :User!~ident@host.example.com
+		public string Nick { get { return From.Split(splitOnBang)[0]; } }
+		public string Ident { get { return From.Split(splitOnAt)[0].Split(splitOnBang)[1]; } }
+		public string Host { get { return From.Split (splitOnAt)[1]; } }
 
 		// :User!~ident@host.example.com PRIVMSG #channel :thought that may surface
 		//  <-------------------From---> <Cmnd-> <--arg->  <----- data ----------->

@@ -13,60 +13,55 @@ using System.ComponentModel;
 
 namespace SimonWaite.Network.Protocols.Irc
 {
-  public class SynchronizedQueue<T> : INotifyPropertyChanged 
-  {
-    Queue<T> q = new Queue<T>();
+	public class SynchronizedQueue<T> : INotifyPropertyChanged where T: class
+	{
+		Queue<T> q = new Queue<T> ();
 
-    public SynchronizedQueue()
-    {
-    }
-    public void Clear()
-    {
-      lock (q)
-      {
-        q.Clear();
-        NotifyPropertyChanged("Clear");
-        // clear out subscribers.
-        PropertyChanged = null;
-      }
-    }
-    public void Enqueue(T element)
-    {
-      lock (q)
-      {
-        q.Enqueue(element);
-      }
-      NotifyPropertyChanged("Queue");
-    }
+		public SynchronizedQueue ()
+		{
+		}
 
-    public T Dequeue()
-    {
-      lock (q)
-      {
-       return q.Dequeue();
-      }
-    }
+		public void Clear ()
+		{
+			lock (q) {
+				q.Clear ();
+				NotifyPropertyChanged ("Clear");
+				// clear out subscribers.
+				PropertyChanged = null;
+			}
+		}
 
-    public bool HasMore
-    {
-      get
-      {
-        lock (q)
-        {
-          return q.Count > 0;
-        }
-      }
-    }
+		public void Enqueue (T element)
+		{
+			lock (q) {
+				q.Enqueue (element);
+			}
+			NotifyPropertyChanged ("Queue");
+		}
 
-    public event PropertyChangedEventHandler PropertyChanged;
+		public T Dequeue ()
+		{
+			lock (q) {
+				return q.Dequeue ();
+			}
+		}
+
+		public bool HasMore {
+			get {
+				lock (q) {
+					return q.Count > 0;
+				}
+			}
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
     
-    private void NotifyPropertyChanged(String info)
-    {
-      if (PropertyChanged != null)
-      {
-        PropertyChanged(this, new PropertyChangedEventArgs(info));
-      }
-    }
-  }
+		private void NotifyPropertyChanged (String info)
+		{
+			if (PropertyChanged != null) {
+				PropertyChanged (this, new PropertyChangedEventArgs (info));
+			}
+		}
+	}
 }
 

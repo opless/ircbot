@@ -11,6 +11,8 @@ namespace SimonWaite.Network.Protocols.Irc
 		List<string> channels = new List<string> ();
 		Timer t;
 
+
+
 		public AutoJoinChannelsAgent (Rfc1459 irc, params string[] channels)
 		{
 			this.irc = irc;

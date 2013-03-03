@@ -23,10 +23,16 @@ namespace SimonWaite.Network.Protocols.Irc
 	{
 		TcpClient connection;
 
+		ChannelMonitorAgent channelAgent;
+
 		public Rfc1459 ()
 		{
 			IsConnected = false;
 			inputQueue = new IrcSubscriptionQueue (this);
+
+			Log.D ("Initialising Default Agents");
+			channelAgent = new ChannelMonitorAgent (this);
+			IsRfc1459CaseMapping = true;
 		}
 
 		public string Server { get; set; }
@@ -48,11 +54,11 @@ namespace SimonWaite.Network.Protocols.Irc
 		Stream stream;
 		BufferedInputPump readPump;
 		IrcSubscriptionQueue inputQueue;
-		SynchronizedQueue<IrcMessage> outputQueue = new SynchronizedQueue<IrcMessage> ();
+		PriorityQueue<IrcMessage> outputQueue = new PriorityQueue<IrcMessage> ();
 
 		public IrcSubscriptionQueue InputQueue { get { return inputQueue; } }
 
-		public SynchronizedQueue<IrcMessage> OutputQueue { get { return outputQueue; } }
+		public PriorityQueue<IrcMessage> OutputQueue { get { return outputQueue; } }
 
 		public void Connect ()
 		{
@@ -165,6 +171,9 @@ namespace SimonWaite.Network.Protocols.Irc
 			Log.D ("Tearing Down connection.");
 			if(null != reason)
 				Log.D ("Reason: {0}",reason);
+
+			IsRfc1459CaseMapping = true;
+
 			this.inputQueue.Clear ();
 			this.outputQueue.Clear ();
 			try {
@@ -177,6 +186,25 @@ namespace SimonWaite.Network.Protocols.Irc
 			IsConnecting = false;
 		}
 
+		public string ToLowerCase (string str)
+		{
+			/*
+			 * the characters {}| are considered to be the 
+			 * lower case equivalents of the characters []\,
+			 * respectively
+			 * 
+			 * Unless, of course the server indicates:
+			 * CASEMAPPING=ascii - then we may use normal rules. (yay for 005)
+			 * 
+			 * TODO: IMPLEMENT CASEMAPPING DETECTION
+			 */
+			string toLower = str.ToLowerInvariant ();
+			if(IsRfc1459CaseMapping)
+				toLower = toLower.Replace ('[', '{').Replace (']', '}').Replace ('\\', '|');
+			return toLower;
+		}
+
+		public bool IsRfc1459CaseMapping { get; set; }
 	}
 }
 
