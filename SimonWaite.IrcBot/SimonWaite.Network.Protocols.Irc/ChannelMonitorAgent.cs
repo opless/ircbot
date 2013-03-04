@@ -177,6 +177,7 @@ namespace SimonWaite.Network.Protocols.Irc
 		// :port80b.se.quakenet.org 352 storpung #botty TheQBot CServe.quakenet.org *.quakenet.org Q H*@d :3 The Q Bot
 		void NewUserDetected (string nick)
 		{
+			// TODO
 		}
 
 		void NewChannelDetected (string channel)
