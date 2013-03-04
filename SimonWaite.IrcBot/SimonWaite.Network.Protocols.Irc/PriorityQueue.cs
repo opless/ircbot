@@ -36,6 +36,9 @@ namespace SimonWaite.Network.Protocols.Irc
 		
 		public T Dequeue ()
 		{
+			Log.D ("PriorityQueue::Dequeue() U:{0} H:{1} M:{2} L:{3}", 
+			       urgent.HasMore, high.HasMore, medium.HasMore, low.HasMore);
+
 			if (urgent.HasMore)
 				return urgent.Dequeue ();
 			if (high.HasMore)

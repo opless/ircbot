@@ -10,10 +10,16 @@ namespace SimonWaite.Network.Protocols.Irc
 		string host;
 		string description;
 
+
 		public User()
 		{
 		}
-
+		public bool IsInitialised
+		{
+			get { 
+				return !(Nick == null || Ident == null || Host == null); // || Description == null); // 
+			}
+		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SimonWaite.Network.Protocols.Irc.User"/> class.
 		/// Uses the details in the 'From' portion of the message to create it.
@@ -66,6 +72,37 @@ namespace SimonWaite.Network.Protocols.Irc
 			}
 		}
 
+		public override string Dump (int i)
+		{
+			string prefix = new string (' ',i);
+			string ret= string.Format("{0} User: {1} ({2}@{3})\n",prefix, Nick, Ident, Host );
+			ret+=string.Format("{0} Desc: '{1}'\n",prefix,Description);
+			ret+=base.Dump(i+2);
+			return ret;
+		}
+
+		#region implemented abstract members of BasicModes
+
+		static readonly string argumentModes = string.Empty; //
+		static readonly string multipleArgumentModes = string.Empty; 
+		
+		
+		public override void ParseObservedModes (string modes, string[] args)
+		{
+			Parse (observedModes, modes, args, argumentModes, multipleArgumentModes);
+		}
+		
+		public override void ParseDesiredModes (string modes, string[] args)
+		{
+			Parse (desiredModes,modes, args, argumentModes, multipleArgumentModes);
+		}
+		
+		public override void ParseInternalModes (string modes, string[] args)
+		{
+			throw new NotImplementedException ();
+		}
+
+		#endregion
 	}
 
 

@@ -14,6 +14,7 @@ namespace SimonWaite.Network.Protocols.Irc
 
 		int ptr = 0;
 		bool needsKick;
+		bool closed;
 
 		public BufferedInputPump (Stream stream, IrcSubscriptionQueue queue, Rfc1459 parent)
 		{
@@ -21,6 +22,7 @@ namespace SimonWaite.Network.Protocols.Irc
 			this.queue = queue;
 			this.parent = parent;
 			needsKick = true;
+			closed = false;
 		}
 
 		public void Kick ()
@@ -47,6 +49,13 @@ namespace SimonWaite.Network.Protocols.Irc
 			}
 
 			Log.D ("Read {0} bytes", amountRead);
+			if (amountRead == 0) {
+				// this'll mean the link has closed.
+				Log.D ("Closed Link Detected");
+				closed = true;
+				parent.TearDownConnection(null);
+				return;
+			}
 			// read into linebuffer, then parse into queue
 			for (int i=0; i < amountRead; i++) {
 				byte c = readBuffer [i];
@@ -58,8 +67,8 @@ namespace SimonWaite.Network.Protocols.Irc
 						Log.D ("InputPump Line: '{0}'", line);
 
 						IrcMessage msg = new IrcMessage (line);
-						Log.D ("InputPump SMesg: '{0}'", msg);
-						Log.D ("InputPump DMesg: '{0}'", msg.ToDebugString());
+						//Log.D ("InputPump SMesg: '{0}'", msg);
+						//Log.D ("InputPump DMesg: '{0}'", msg.ToDebugString());
 						queue.Enqueue (msg);
 						ptr = 0;
 					}

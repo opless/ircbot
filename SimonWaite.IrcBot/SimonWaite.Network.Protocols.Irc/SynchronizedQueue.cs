@@ -54,6 +54,12 @@ namespace SimonWaite.Network.Protocols.Irc
 			}
 		}
 
+		public int Count {
+			get {
+				return q.Count;
+			}
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
     
 		private void NotifyPropertyChanged (String info)

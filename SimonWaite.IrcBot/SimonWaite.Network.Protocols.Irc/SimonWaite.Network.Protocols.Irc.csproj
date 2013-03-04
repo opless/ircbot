@@ -50,6 +50,7 @@
     <Compile Include="ReadOnlyList.cs" />
     <Compile Include="BasicModes.cs" />
     <Compile Include="PriorityQueue.cs" />
+    <Compile Include="UserChannelModes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

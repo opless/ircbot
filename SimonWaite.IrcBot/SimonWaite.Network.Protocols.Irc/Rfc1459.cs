@@ -134,14 +134,13 @@ namespace SimonWaite.Network.Protocols.Irc
 
 		void HandleWriteNotify (object sender, PropertyChangedEventArgs e)
 		{
-			var queue = sender as SynchronizedQueue<IrcMessage>;
+			var queue = sender as PriorityQueue<IrcMessage>;
 			Log.D ("HandleWriteNotify: {0}", e.PropertyName);
 			// if we're being torn down, don't write anything
 			if (e.PropertyName.CompareTo ("Clear") == 0)
 				return;
 
 			//TODO: write better anti flood mechanism!
-			//TODO: maybe a high and low priority queue?
 			while (queue.HasMore) {
 				long now = (long)(DateTime.UtcNow - epoch).TotalSeconds;
 

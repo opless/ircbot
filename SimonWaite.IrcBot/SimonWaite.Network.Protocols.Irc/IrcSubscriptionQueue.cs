@@ -62,7 +62,10 @@ namespace SimonWaite.Network.Protocols.Irc
 					foreach (var subscriber in subscribers[interest]) {
 						try {
 							subscriber.SubscriptionNotification (irc, message);
-						} catch {
+						} catch(Exception ex) {
+							Log.D ("*** Exception: interest: '{0}' by {1}",interest,subscriber.GetType().FullName);
+							Log.D (ex.ToString());
+							Log.D("*** End Exception ***");
 						}
 					}
 				}
